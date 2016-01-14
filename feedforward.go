@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"encoding/json"
 )
 
 // FeedForwad struct is used to represent a simple neural network
@@ -194,4 +195,27 @@ func (nn *FeedForward) Test(patterns [][][]float64) {
 	for _, p := range patterns {
 		fmt.Println(p[0], "->", nn.Update(p[0]), " : ", p[1])
 	}
+}
+
+// Serializes a networks current state to json.
+// This can later be saved to file, db or other kind of storage
+func (nn *FeedForward) Serialize() ([]byte, error) {
+
+	data, err := json.Marshal(nn)
+	if err != nil {
+		return make([]byte,0), err
+	}
+
+	return data, err
+}
+
+// Load a previously serialized network fron json
+func (nn *FeedForward) Load(data []byte) error {
+
+	err := json.Unmarshal(data, nn)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
